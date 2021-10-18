@@ -1,0 +1,25 @@
+spring:
+  redis:
+    port: 6379
+    host: 180.76.145.225
+    database: 0
+    jedis:
+      pool:
+        max-active: 8
+        max-wait: 1ms
+        max-idle: 8
+        min-idle: 0
+    timeout: 5000ms
+    password: 116913@xh
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/robot?characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/*.xml

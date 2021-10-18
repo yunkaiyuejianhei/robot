@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+<meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+<title></title>
+
+<!--图标库 可无视-->
+<link rel='stylesheet' th:href='@{css/font-awesome.min.css}'>
+
+<!--核心样式-->
+<link rel="stylesheet"  th:href="@{css/style.css}">
+
+</head>
+<body>
+
+<div class="container">
+  <div class="card"></div>
+  <div class="card">
+    <h1 class="title">用户登录</h1>
+    <form id="loginForm" >
+      <div class="input-container">
+        <input type="text" name="account" required="required" />
+        <label for="label1">用户名</label>
+        <div class="bar"></div>
+      </div>
+      <div class="input-container">
+        <input type="password" name="password" required="required" />
+        <label for="label2">密码</label>
+        <div class="bar"></div>
+      </div>
+      <div class="button-container">
+        <button type="button" id="btn"><span>登录</span></button>
+      </div>
+      <div><p style="color: red;text-align: center" id="err_msg"></p></div>
+    </form>
+  </div>
+  <div class="card alt">
+    <div class="toggle"></div>
+    <h1 class="title">会员注册
+      <div class="close"></div>
+    </h1>
+    <form id="registerForm">
+      <div class="input-container">
+        <input type="#{type}" id="label1" name="account" required="required" />
+        <label for="label1">用户名</label>
+        <div class="bar" id="{label1}"></div>
+      </div>
+      <div class="input-container">
+        <input type="#{type}" id="label2" name="password" required="required" />
+        <label for="label2">密码</label>
+        <div class="bar"></div>
+      </div>
+      <div class="input-container">
+        <input type="#{type}" id="label3"  required="required" />
+        <label for="label3">确认密码</label>
+        <div class="bar"></div>
+      </div>
+      <div class="input-container"><p style="color: white;text-align: center" id="err_rgs"></p></div>
+      <div class="button-container">
+        <button type="button" id="register"><span>提交注册</span></button>
+      </div>
+    </form>
+  </div>
+</div>
+<script th:src='@{webjars/jquery/3.6.0/jquery.min.js}'></script>
+<script th:src="@{js/script.js}"></script>
+<script type="text/javascript">
+  $("#register").click(function () {
+    let regular =/[\w\d]{6,}/
+    let  name=$("#label1").val()
+    if (!name){
+      $("#err_rgs").html("账户不能为空");
+    }
+    let  boolean=regular.test($("#label2").val())
+    if (!boolean){
+      $("#err_rgs").html("密码不少于6位,且只能由字母和数字组成");
+    }
+    if ($("#label2").val()!=$("#label3").val()){
+      $("#err_rgs").html("请确认密码一致");
+    }
+    if (name&&boolean&&$("#label2").val()==$("#label3").val()){
+      $.post("user/register",$("#registerForm").serialize(),function(res) {
+          if (res.flag){
+            $("#err_rgs").html(res.message);
+            setTimeout(function(){
+              location.href=`chat/${name}`
+            },3000)
+          }
+      })
+    }
+
+  })
+</script>
+<div style="text-align:center;">
+</div>
+</body>
+</html>
+

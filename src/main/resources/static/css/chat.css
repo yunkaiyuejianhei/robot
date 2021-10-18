@@ -1,0 +1,132 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+body {
+  background: url("https://i.loli.net/2021/10/03/WT7AGNqY48L5OxC.jpg") no-repeat;
+  height: 90%;
+  width: 100%;
+}
+.chat {
+  height: 750px;
+  width: 1000px;
+  background: #f5f5f5;
+  margin: 100px 400px;
+  border-radius: 1%;
+}
+.chattop {
+  height: 75px;
+  width: 100%;
+  background: white;
+  color: black;
+  border-bottom: 1px solid;
+}
+.title {
+  width: 750px;
+  float: right;
+  text-align: center;
+  line-height: 75px;
+  font-size: x-large;
+}
+.messageQueue {
+  width: 250px;
+  height: 90%;
+  flex-direction: column;
+  background: white;
+  color: #a2a2a2;
+  border-right: 1px solid;
+  opacity: 1;
+  overflow-y: scroll;
+}
+.messageQueue::-webkit-scrollbar {
+  width: 0;
+}
+.message-item {
+  height: 10%;
+  width: 250px;
+  display: flex;
+}
+.message {
+  margin: 12px;
+  flex-direction: column;
+}
+.message-img {
+  float: left;
+  height: 50px;
+  width: 50px;
+  margin: 15px;
+}
+.message-title {
+  font-size: larger;
+  color: black;
+}
+.message-val {
+  color: #a2a2a2;
+  font-size: small;
+}
+.message-list {
+  height: 60%;
+  width: 100%;
+  color: #000;
+  border-bottom: 1px solid;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+}
+.list-item {
+  width: 100%;
+  height: 75px;
+  line-height: 75px;
+}
+.list-msg {
+  position: relative;
+  max-width: 400px;
+  word-break: break-all;
+  border: 1px solid #b2b2b2;
+  background-color: #ddd;
+  margin-top: 25px;
+  padding: 5px;
+  border-radius: 5px;
+  display: inline-block;
+}
+.room {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+.room-cloum {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.input {
+  height: 30%;
+  width: 100%;
+  background: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+}
+.input-area {
+  margin: 10px;
+  height: 170px;
+  width: 97%;
+  resize: none;
+  outline: none;
+  border: 0px;
+  background: #f5f5f5;
+  font-size: larger;
+}
+.input-end {
+  height: 30px;
+  width: 97%;
+  margin: 10px;
+  line-height: 50px;
+}
+.send {
+  height: 30px;
+  width: 50px;
+  float: right;
+  margin-right: 20px;
+}

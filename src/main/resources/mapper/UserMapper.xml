@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.robot.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.example.robot.dao.User">
+            <id property="uid" column="uid" jdbcType="INTEGER"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="money" column="money" jdbcType="DECIMAL"/>
+            <result property="phone" column="phone" jdbcType="INTEGER"/>
+            <result property="idcard" column="idcard" jdbcType="VARCHAR"/>
+            <result property="gender" column="gender" jdbcType="TINYINT"/>
+            <result property="avatar" column="avatar" jdbcType="VARCHAR"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+    </resultMap>
+
+<!--    <sql id="Base_Column_List">-->
+<!--        uid,account,password,-->
+<!--        money,phone,idcard,-->
+<!--        gender,avatar,status-->
+<!--    </sql>-->
+</mapper>
