@@ -124,8 +124,9 @@
       },
       computed:{
         subtext(){
-          let text =this.msgList[this.msgList.length-1].message
-          text=text.length > 8 ? text.substring(0,8):text;
+          let text =this.msgList[this.msgList.length-1]
+          text=`${text.sender}:${text.message}`;
+          text=text.length>7?text.substring(0,7)+"...":text
           return text;
         }
       },
