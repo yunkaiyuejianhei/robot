@@ -5,7 +5,12 @@ import com.example.robot.redis.mapper.MessageMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import com.example.robot.dao.Result;
 import org.springframework.data.redis.connection.stream.MapRecord;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +21,8 @@ import java.util.*;
 public class MessageContrller {
     @Autowired
     private MessageMapper mapper;
-
+    @Autowired
+    private StringRedisTemplate template;
     @GetMapping("/d/{key}")
     public Set<String> getDialogIds(@PathVariable String key){
         return mapper.getDialogIds(key);
@@ -48,5 +54,25 @@ public class MessageContrller {
     @GetMapping("group/{key}/{id1}/{id2}")
     public void addGroup(@PathVariable String key,@PathVariable String id1,@PathVariable String id2) {
         mapper.addGroup(key,MessageMapper.GROUPID+id1+":"+id2,MessageMapper.GROUPID+id2+":"+id1);
+    }
+    @GetMapping("/lua")
+    public Object test() {
+        List<String> keys=new ArrayList<>();
+        keys.add("l1");
+        Map<String,Object> map=new HashMap<>();
+        map.put("ARGV[1]","0");
+        map.put("ARGV[2]","-1");
+        Object execute = template.execute(RedisScript.of(new ClassPathResource("script/test.lua"),String.class),keys,"0","-1");
+        System.out.println(execute);
+        return execute;
+    }
+
+    @GetMapping("/session")
+    public Result sessionTest(Model model){
+        Result result = new Result();
+        result.setMessage("hello session");
+        result.setFlag(true);
+        model.addAttribute("id",result);
+        return result;
     }
 }

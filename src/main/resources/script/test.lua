@@ -1,0 +1,1 @@
+local list=redis.call('lrange',KEYS[1],ARGV[1],ARGV[2]);local i=1;local nums={}for k,v in ipairs(list)do if v%2==0 then table.insert(nums,i,v);i=i+1;end;end;return table.concat(nums,',')
