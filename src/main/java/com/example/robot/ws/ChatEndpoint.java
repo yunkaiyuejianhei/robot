@@ -29,8 +29,9 @@ public class ChatEndpoint {
     private Session session;
     //声明httpsession对象，该对象存储了用户名
     private HttpSession httpSession;
-
+    //从redis获取数据
     private static MessageMapper mapper;
+    //从mysql获取数据
     private static UserService service;
     @Autowired
     public void setMapper(MessageMapper mapper) {
@@ -41,11 +42,16 @@ public class ChatEndpoint {
         ChatEndpoint.service = service;
     }
 
+    /**
+     * 初始化,用loginId查询消息并发送用户
+     * @param session 发送信息的session,登陆者发送消息的对象
+     * @param config  存储httpsession,即登陆者信息
+     * @param loginId 登陆者id
+     */
     @OnOpen
     public void onOpen(Session session, EndpointConfig config,@PathParam("loginId") String loginId) throws IOException {
         this.session = session;
-        HttpSession httpSession = (HttpSession) config.getUserProperties().get(HttpSession.class.getName());
-        this.httpSession=httpSession;
+        this.httpSession=(HttpSession) config.getUserProperties().get(HttpSession.class.getName());
 
         Set<String> queue = getMessageQueue(loginId);
         if(queue.size()==0) {
@@ -54,16 +60,6 @@ public class ChatEndpoint {
         List<MessageList> msgList=new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         ObjectMapper om=new ObjectMapper();
-
-//        queue.forEach(item-> {
-//            List<MapRecord<String, Object, Object>> mapRecords = mapper.readConsumer(
-//                    item,
-//                    sb.append(MessageMapper.GROUPID).append(item.substring(16)).toString() ,
-//                    sb.delete(0,sb.length()).append(MessageMapper.CONSUMERID).append(item.substring(16)).toString());
-//            sb.setLength(0);
-//            System.out.println(mapRecords);
-//            mapRecords.forEach(record -> System.out.println(record));
-//        });
 
         for (String item : queue) {
             List<Message> msg=new ArrayList<>();
@@ -93,6 +89,12 @@ public class ChatEndpoint {
 
         onlineUsers.put(loginId,this);
     }
+
+    /**
+     * 根据发送者和接受者的id进行消息传递
+     * @param message 客户端传来的消息,包含通信双方的id
+     * @param session 发送消息的对象
+     */
     @OnMessage
     public void onMessage(String message,Session session) throws IOException {
         System.out.println(message);
@@ -106,12 +108,24 @@ public class ChatEndpoint {
         ChatEndpoint chatEndpoint = onlineUsers.get(receiver);
         chatEndpoint.session.getBasicRemote().sendText(message);
     }
+
+    /**
+     * 销毁注册对象
+     * @param session 发送消息的对象
+     * @param loginId 登陆者id
+     */
     @OnClose
     public void onClose(Session session,@PathParam("loginId") String loginId){
         ChatEndpoint endpoint = onlineUsers.get(loginId);
-        onlineUsers.remove(endpoint);
+        if (endpoint !=null){
+            onlineUsers.remove(endpoint);
+        }
     }
 
+    /**
+     * 广播
+     * @param message 发送的消息
+     */
     private void broadcastAllUsers(String message){
         try {
             for(Map.Entry<String,ChatEndpoint>pair : onlineUsers.entrySet()) {

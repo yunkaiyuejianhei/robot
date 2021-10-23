@@ -8,9 +8,8 @@ import javax.websocket.EndpointConfig;
 
 @Configuration
 public class WebSocketConfig {
-    @Bean
+
     public ServerEndpointExporter serverEndpointExporter(){
-        ServerEndpointExporter serverEndpointExporter = new ServerEndpointExporter();
         return new ServerEndpointExporter();
     }
 

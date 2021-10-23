@@ -73,7 +73,7 @@
       data: {
         loginUser: loginUser,//登陆者id
         text: "",//发送文本消息
-        lastClick: 0,//单击对话列表时传递的索引
+        lastIndex: 0,//单击对话列表时传递的索引
         messageQueue: [],//消息列表
         msgList: [],//消息记录
         float: ["left", "right"],
@@ -83,27 +83,27 @@
       },
       mounted() {//初始化
         const vm=this;let i=0;
-        this.ws=new WebSocket(`ws://localhost:8080/chat/${this.loginUser}`);
+        this.ws=new WebSocket(`ws://${window.location.host}/chat/${this.loginUser}`);
         this.ws.onopen =function (params) {
           console.log("连接成功");
         };
         this.ws.onmessage =function (event) {
           let message = JSON.parse(event.data)
           console.log(message)
-          if (i++===0){
+          if (i++===0){//判断第一次返回
             vm.messageQueue=message
             vm.msgList=message[0].msgList
             vm.receiver=vm.messageQueue[0].receiver;
           }else {
             console.log(message)
-            if (message.receiver==vm.loginUser){
+            if (message.receiver===vm.loginUser){
               vm.msgList.push(message)
             }
           }
         }
       },
       methods: {
-        sendmsg(parent) {//消息发送
+        sendmsg() {//消息发送
           const message={
             sender: this.loginUser,
             receiver:this.receiver,
@@ -115,8 +115,8 @@
           this.ws.send(JSON.stringify(message));
         },
         changeModel(parent) {//切换对话列表时，切换遍历的数组
-          this.$refs.i[this.lastClick].style.background = "white";
-          this.lastClick = parent;
+          this.$refs.i[this.lastIndex].style.background = "white";
+          this.lastIndex = parent;
           this.$refs.i[parent].style.background = "#f5f5f5";
           this.msgList = this.messageQueue[parent].msgList;
           this.receiver=this.messageQueue[parent].receiver;

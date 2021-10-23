@@ -9,7 +9,7 @@ $(".close").on("click", function () {
 $("#btn").click(function () {
   $.post("user/main",$("#loginForm").serialize(),function(res){
     if (res.flag){
-      location.href = `chat/${res.message}`;
+      location.href = `chat/${res.message}`;//根据id获取相关消息
     } else {
       $("#err_msg").html(res.message);
     }

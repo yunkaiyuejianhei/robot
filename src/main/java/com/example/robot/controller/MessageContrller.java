@@ -60,19 +60,10 @@ public class MessageContrller {
         List<String> keys=new ArrayList<>();
         keys.add("l1");
         Map<String,Object> map=new HashMap<>();
-        map.put("ARGV[1]","0");
-        map.put("ARGV[2]","-1");
         Object execute = template.execute(RedisScript.of(new ClassPathResource("script/test.lua"),String.class),keys,"0","-1");
         System.out.println(execute);
         return execute;
     }
 
-    @GetMapping("/session")
-    public Result sessionTest(Model model){
-        Result result = new Result();
-        result.setMessage("hello session");
-        result.setFlag(true);
-        model.addAttribute("id",result);
-        return result;
-    }
+
 }

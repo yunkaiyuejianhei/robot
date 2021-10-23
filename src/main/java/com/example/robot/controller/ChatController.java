@@ -1,6 +1,5 @@
 package com.example.robot.controller;
 
-import com.example.robot.dao.Result;
 import com.example.robot.dao.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,10 +14,7 @@ public class ChatController {
     public String main(){
         return "login";
     }
-    @GetMapping("/main")
-    public String toMain(){
-        return "main";
-    }
+
     @GetMapping("/chat/{loginId}")
     public String chat(@PathVariable String loginId, HttpSession session, Model model){
         User attribute = (User) session.getAttribute(loginId);
