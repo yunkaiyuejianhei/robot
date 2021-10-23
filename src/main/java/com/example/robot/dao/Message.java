@@ -8,8 +8,23 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Message {
-    private String sender;//发送者
-    private String receiver;//接收者
-    private String message;//消息
-    private String src;//发送者图像路径
+    /**
+     *发送者
+     */
+    private String sender;
+    /**
+     *  接收者 */
+    private String receiver;
+    /**
+     *消息
+     */
+    private String message;
+    /**
+     * 发送者图像路径
+     */
+    private String src;
+    /**
+     * 消息类型
+     */
+    private int typeInfo;
 }

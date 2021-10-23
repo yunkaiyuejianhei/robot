@@ -18,7 +18,6 @@ public class ChatController {
     @GetMapping("/chat/{loginId}")
     public String chat(@PathVariable String loginId, HttpSession session, Model model){
         User attribute = (User) session.getAttribute(loginId);
-        System.out.println(attribute);
         model.addAttribute("loginId",attribute);
         return "user/chat";
     }

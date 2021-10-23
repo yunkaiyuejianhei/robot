@@ -84,7 +84,7 @@
       mounted() {//初始化
         const vm=this;let i=0;
         this.ws=new WebSocket(`ws://${window.location.host}/chat/${this.loginUser}`);
-        this.ws.onopen =function (params) {
+        this.ws.onopen =function () {
           console.log("连接成功");
         };
         this.ws.onmessage =function (event) {

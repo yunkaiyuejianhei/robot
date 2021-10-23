@@ -51,10 +51,11 @@ public class ChatEndpoint {
     @OnOpen
     public void onOpen(Session session, EndpointConfig config,@PathParam("loginId") String loginId) throws IOException {
         this.session = session;
-        this.httpSession=(HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        HttpSession httpSession=(HttpSession) config.getUserProperties().get(HttpSession.class.getName());
+        this.httpSession=httpSession;
 
         Set<String> queue = getMessageQueue(loginId);
-        if(queue.size()==0) {
+        if (queue.size()==0) {
             return;
         }
         List<MessageList> msgList=new ArrayList<>();
@@ -75,6 +76,9 @@ public class ChatEndpoint {
                 }
             }
             messageList.setMsgList(msg);
+            if (receiver.contains("")){
+
+            }
             String rec = receiver.replace(loginId, "").replace(":", "");
             messageList.setReceiver(rec);
             QueryChainWrapper<User> query = service.query();
@@ -97,12 +101,10 @@ public class ChatEndpoint {
      */
     @OnMessage
     public void onMessage(String message,Session session) throws IOException {
-        System.out.println(message);
         ObjectMapper om = new ObjectMapper();
         StringBuilder sb = new StringBuilder();
         Message msg =om.readValue(message,Message.class);
         String receiver = msg.getReceiver();
-        System.out.println(msg);
         String str=msg.getSender().compareTo(msg.getReceiver())<0?msg.getSender()+":"+msg.getReceiver():msg.getReceiver()+":"+msg.getSender();
         mapper.xaddMessage(sb.append(MessageMapper.FRIENDMESSAGE).append(str).toString(),str,message);
         ChatEndpoint chatEndpoint = onlineUsers.get(receiver);
@@ -123,17 +125,11 @@ public class ChatEndpoint {
     }
 
     /**
-     * 广播
+     * 广播,群聊发送消息
      * @param message 发送的消息
      */
     private void broadcastAllUsers(String message){
-        try {
-            for(Map.Entry<String,ChatEndpoint>pair : onlineUsers.entrySet()) {
-                pair.getValue().session.getBasicRemote().sendText(message);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public Set<String> getMessageQueue(String loginId){

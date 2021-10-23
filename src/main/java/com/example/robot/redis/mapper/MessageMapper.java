@@ -1,6 +1,5 @@
 package com.example.robot.redis.mapper;
 
-import io.lettuce.core.XReadArgs;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Range;
@@ -18,10 +17,18 @@ import java.util.Set;
 @Component
 @Slf4j
 public class MessageMapper {
-    public static final String DIALOGUEQUEUE="DIALOGUEID:";//组合个人id生成对话队列的id
-    public static final String FRIENDMESSAGE="FRIENDMESSAGEID:";//组合双方好友id生成对话id
-    public static final String GROUPID="GROUPID:";//消费组id
-    public static final String CONSUMERID="CONSUMERID:";//消费者id
+    /*组合个人id生成对话队列的id*/
+    public static final String DIALOGUEQUEUE="DIALOGUEID:";
+    /*组合双方好友id生成对话id*/
+    public static final String FRIENDMESSAGE="FRIENDMESSAGEID:";
+    /*消费组id*/
+    public static final String GROUPID="GROUPID:";
+    /*消费者id*/
+    public static final String CONSUMERID="CONSUMERID:";
+    /*聊天群组 消息记录列表id*/
+    public static final String CHATGROUPLIST="CHATGROUPLIST:";
+    /*聊天群组 成员组id*/
+    public static final String CHATGROUP="CHATGROUPID:";
     @Autowired
     private ZSetOperations<String,String> zset;
     @Autowired
@@ -29,16 +36,17 @@ public class MessageMapper {
 
     /**
      * 用zset存会话列表 如果key存在，则添加失败
-     * @param message  消息内容
+     * @param dialogId  对话id
      * @param key DIALOGUEID: + 个人id
      */
-    public void addMessage(String message,String key){
-        boolean aBoolean = zset.addIfAbsent(key, message, 0);
+    public boolean addDialogId(String dialogId, String key){
+        boolean aBoolean = zset.addIfAbsent(key, dialogId, 0);
         if (aBoolean){
             log.info("会话添加成功");
         } else{
             log.warn("会话已存在");
         }
+        return aBoolean;
     }
 
     /**
@@ -56,9 +64,8 @@ public class MessageMapper {
      * @param file  发送人id/接收人id
      * @param message 消息内容
      */
-    public void xaddMessage(String key, String file,String message){
-        stream.add(key, Collections.singletonMap(file, message));
-        stream.trim(key, 300);
+    public RecordId xaddMessage(String key, String file,String message){
+        return stream.add(key, Collections.singletonMap(file, message));
     }
 
     /**
@@ -95,4 +102,14 @@ public class MessageMapper {
     public List<MapRecord<String, Object, Object>> getMessagesRange(String key){
         return stream.range(key, Range.open("-", "+"), RedisZSetCommands.Limit.limit().count(100));
     }
+
+    /**
+     * 创建聊天群组
+     * @return
+     */
+    public RecordId createChatGroup(String groupName, String file,List<String> members){
+        members.stream().forEach(item->zset.addIfAbsent(groupName,item,0));
+        return xaddMessage(groupName,file,groupName+" 创建成功。");
+    }
+
 }
